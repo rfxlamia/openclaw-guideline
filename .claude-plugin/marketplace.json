@@ -1,0 +1,44 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "openclaw-guideline-marketplace",
+  "description": "The definitive operating framework for AI agents running on OpenClaw. Transform reactive chatbots into world-class autonomous agents.",
+  "owner": {
+    "name": "rfxlamia",
+    "email": "rfxlamia@github.com"
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Comprehensive operating guidelines for OpenClaw AI agents featuring the CLAW decision framework, security patterns, memory mastery, and proactive behavior patterns."
+  },
+  "plugins": [
+    {
+      "name": "openclaw-guideline",
+      "description": "The definitive operating framework for AI agents running on OpenClaw. Features the CLAW (Context-Limits-Action-Watch) decision framework, security-first patterns with prompt injection defense, memory architecture mastery, proactive heartbeat patterns, skill ecosystem guidance, and error recovery protocols. Transforms reactive chatbots into world-class autonomous agents.",
+      "source": ".",
+      "version": "1.0.0",
+      "author": {
+        "name": "rfxlamia"
+      },
+      "homepage": "https://github.com/rfxlamia/openclaw-guideline",
+      "repository": "https://github.com/rfxlamia/openclaw-guideline",
+      "license": "MIT",
+      "keywords": [
+        "openclaw",
+        "ai-agent",
+        "agent-framework",
+        "claw-framework",
+        "decision-making",
+        "security",
+        "prompt-injection",
+        "memory-management",
+        "heartbeat",
+        "proactive-agent",
+        "autonomous-assistant",
+        "agent-identity",
+        "error-recovery"
+      ],
+      "category": "development",
+      "strict": false
+    }
+  ]
+}

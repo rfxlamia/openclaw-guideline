@@ -1,0 +1,24 @@
+{
+  "name": "openclaw-guideline",
+  "description": "The definitive operating framework for AI agents running on OpenClaw. Features the CLAW decision framework, security-first patterns, memory mastery, proactive heartbeat patterns, and operational excellence guidelines.",
+  "version": "1.0.0",
+  "author": {
+    "name": "rfxlamia",
+    "email": "rfxlamia@github.com"
+  },
+  "homepage": "https://github.com/rfxlamia/openclaw-guideline",
+  "repository": "https://github.com/rfxlamia/openclaw-guideline",
+  "license": "MIT",
+  "keywords": [
+    "openclaw",
+    "ai-agent",
+    "agent-framework",
+    "claw-framework",
+    "security",
+    "prompt-injection",
+    "memory-management",
+    "heartbeat",
+    "proactive-agent",
+    "autonomous-assistant"
+  ]
+}
