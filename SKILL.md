@@ -404,6 +404,114 @@ When a capability is unavailable:
 
 ---
 
+## Section 8: Multi-Agent Architecture
+
+OpenClaw supports multiple agents with isolated workspaces and specialized capabilities. Understand when and how to leverage this architecture.
+
+### Agents vs Sub-Agents
+
+| Aspect | Multi-Agent | Sub-Agent |
+|--------|-------------|-----------|
+| **Purpose** | Independent personas/workspaces | Parallel task execution |
+| **Persistence** | Permanent | Temporary, task-scoped |
+| **Session Key** | `agent:<id>:<mainKey>` | `agent:<id>:subagent:<uuid>` |
+| **Workspace** | Separate per agent | Shares parent workspace |
+
+### When to Use Multi-Agent
+
+**Multiple Agents (Persistent):**
+- Different personas (personal vs work)
+- Different security levels (trusted vs public)
+- Different model configurations (fast vs deep)
+- Multi-tenant scenarios (family members, team members)
+
+**Sub-Agents (Temporary):**
+- Parallel research tasks
+- Long-running operations
+- Fan-out queries (check multiple sources)
+- Isolated execution without history pollution
+
+### Sub-Agent Invocation
+
+Sub-agents are spawned for parallel task execution:
+
+```
+sessions_spawn({
+  task: "Research competitor pricing",
+  label: "competitor-research",
+  model: "anthropic/claude-sonnet-4-5",
+  runTimeoutSeconds: 300
+})
+```
+
+**Key constraints:**
+- Cannot spawn nested sub-agents
+- Isolated from parent chat history
+- Results announced when complete
+- Use `/subagents` to manage active sub-agents
+
+### Routing & Isolation
+
+Messages route deterministically to agents based on:
+1. Peer match (exact DM/group/channel ID)
+2. Guild/Team ID
+3. Account ID
+4. Channel-level wildcard
+5. Fallback to default agent
+
+**Security principle:** Each agent has isolated credentials, workspace, and session store. No sharing by default.
+
+For detailed configuration examples and patterns, see `references/multi-agent-architecture.md`.
+
+---
+
+## Section 9: Production Security
+
+When deploying OpenClaw beyond personal use, security hardening is essential. A compromised agent can execute arbitrary code, exfiltrate data, or abuse connected services.
+
+### Threat Model
+
+**Core risks (RAK Framework):**
+- **Root Risk** - Agent executes malicious code on host OS
+- **Agency Risk** - Agent acts uncontrollably within connected applications
+- **Keys Risk** - Credential theft from agent's memory/filesystem
+
+**Attack vectors:**
+1. Inbound messages → Prompt injection → Tool misuse → Host compromise
+2. External content → Hidden instructions → Memory poisoning
+3. Gateway exposure → Auth bypass → Credential theft
+
+### Hardening Checklist
+
+| Layer | Requirement | Configuration |
+|-------|-------------|---------------|
+| **Files** | Restrict permissions | `chmod 700 ~/.openclaw`, `chmod 600 *.json` |
+| **Gateway** | Auth + localhost bind | `auth.token` from env, `bind: "127.0.0.1"` |
+| **DM Policy** | Pairing or allowlist | `dmPolicy: "pairing"` or `"allowlist"` |
+| **Sandbox** | Container isolation | `mode: "non-main"` or `"all"` |
+| **Model** | Instruction-hardened | Claude Opus 4.6 for public agents |
+| **Tools** | Minimal privilege | Explicit allow/deny lists |
+
+### Critical: Never in Production
+
+- `bind: "0.0.0.0"` (public internet exposure)
+- `dmPolicy: "open"` (anyone can DM)
+- `sandbox.mode: "off"` with untrusted input
+- Hardcoded credentials in config files
+
+### Deployment Patterns
+
+| Pattern | Sandbox | DM Policy | Network |
+|---------|---------|-----------|---------|
+| Single-User Mac | `off` | `allowlist` | Tailscale |
+| VPS + Docker | `non-main` | `pairing` | Reverse proxy + HTTPS |
+| Multi-Tenant | `all` | `allowlist` | Bindings by phone/handle |
+| Public Bot | `all`, `network: "none"` | `disabled` | Read-only tools |
+
+For comprehensive hardening guides, incident response, and audit procedures, see `references/security-hardening.md`.
+
+---
+
 ## Quick Reference
 
 ### CLAW at a Glance
@@ -441,10 +549,12 @@ Immediately halt and report if:
 
 For deeper knowledge, see:
 - `references/security-deep-dive.md` - Advanced security patterns
+- `references/security-hardening.md` - Security hardening guidelines
 - `references/memory-mastery.md` - Memory management strategies
 - `references/proactive-patterns.md` - Heartbeat optimization
 - `references/skill-ecosystem.md` - Skill management
 - `references/integration-patterns.md` - Platform-specific guidance
+- `references/multi-agent-architecture.md` - Multi-agent system architecture
 - `references/error-recovery.md` - Comprehensive error handling
 
 ---
